@@ -47,7 +47,7 @@ namespace Masev.CustomUnityDebug
             { CDebugTagType.OK, new CDebugTag("OK", Color.gray, true, false) },
             { CDebugTagType.WARNING, new CDebugTag("WARNING", Color.yellow, true, false) },
             { CDebugTagType.ERROR, new CDebugTag("ERROR", Color.red, true, false) },
-            { CDebugTagType.CDEBUG, new CDebugTag("ERROR", Orange, true, false) },
+            { CDebugTagType.CDEBUG, new CDebugTag("CDEBUG", Orange, true, false) },
             { CDebugTagType.UNKNOWN, new CDebugTag("UNKNOWN", Color.yellow, true, true) },
         };
 
@@ -174,7 +174,7 @@ namespace Masev.CustomUnityDebug
         {
             if (TagsMap.TryGetValue(tag, out CDebugTag dTag))
                 dTag.Enabled = enabled;
-            else Log(CDebugTagType.ERROR, "Unknown Debug Tag!");
+            else Log(CDebugTagType.CDEBUG, CDebugTagType.ERROR, "Unknown Debug Tag!");
         }
     }
 }

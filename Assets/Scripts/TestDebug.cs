@@ -12,8 +12,9 @@ namespace DefaultNamespace
             CDebug.TryAddTag(CustomTag.TEST2, new CDebugTag("TEST2", CDebug.WhiteGray, true, false));
             CDebug.TryAddTag(CustomTag.TEST3, new CDebugTag("TEST3", CDebug.Orange, true, true));
             
-            
             CDebug.DefaultTag = CustomTag.TEST;
+            CDebug.SetTagEnabled(CustomTag.TEST, true);
+            CDebug.DebugEnabled = true;
         }
 
         private void Start()

@@ -1,0 +1,12 @@
+{
+  "name": "com.masev.customdebug",
+  "displayName": "Custom Unity Debug",
+  "author": { "name": "Seth Gavrilov", "url": "https://www.linkedin.com/in/gavrilov-vsevolod/" },
+  "version": "0.1.0",
+  "unity": "2018.1",
+  "description": "A simple and open source add-on to Debug.Log ",
+  "keywords": [ "debug", "log" ],
+  "license": "MIT",
+  "category": "Debug",
+  "dependencies": {}
+}

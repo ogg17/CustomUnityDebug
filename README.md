@@ -1,5 +1,5 @@
 # Custom Unity Debug
-> A simple and open source add-on to Debug.Log
+> Custom Unity Debug is an open-source extension for Unity's Debug.Log, offering enhanced logging with customizable tags, colors, and formatting. It allows developers to define, categorize, and filter log messages efficiently. Features include multi-tag logging, global and per-tag enable/disable controls, and seamless integration with Unity's console.
 
 ![image](https://github.com/user-attachments/assets/6575f530-011e-4e31-9bdc-e6e12e468336)
 

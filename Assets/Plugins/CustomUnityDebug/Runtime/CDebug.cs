@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -52,8 +53,34 @@ namespace Masev.CustomUnityDebug
         };
 
         
-        // Main String Builder
-        private static readonly StringBuilder SBuilder = new();
+        // String Builder Pool
+        private static readonly HashSet<StringBuilder> EnabledSb = new();
+        private static readonly HashSet<StringBuilder> DisabledSb = new();
+
+        private static StringBuilder GetSb()
+        {
+            StringBuilder builder;
+            if (DisabledSb.Count > 0)
+            {
+                builder = DisabledSb.First();
+                DisabledSb.Remove(builder);
+                EnabledSb.Add(builder);
+                return builder;
+            }
+
+            builder = new StringBuilder();
+            EnabledSb.Add(builder);
+            return builder;
+        }
+
+        private static void DisableSb(StringBuilder builder)
+        {
+            if(!EnabledSb.Contains(builder)) 
+                throw new InvalidOperationException("The builder is not exist");
+            builder.Clear();
+            EnabledSb.Remove(builder);
+            DisabledSb.Add(builder);
+        }
         
         
         /// <summary>
@@ -109,58 +136,60 @@ namespace Masev.CustomUnityDebug
         public static void Log(Enum tag1, Enum tag2, Enum tag3, Enum tag4, params string[] message)
         {
             if (!DebugEnabled) return;
+            StringBuilder builder = GetSb();
 
             // Add tags
-            if (!WriteTag(tag1)) return;
-            if (!WriteTag(tag2)) return;
-            if (!WriteTag(tag3)) return;
-            if (!WriteTag(tag4)) return;
+            if (!WriteTag(tag1, builder)) return;
+            if (!WriteTag(tag2, builder)) return;
+            if (!WriteTag(tag3, builder)) return;
+            if (!WriteTag(tag4, builder)) return;
 
-            SBuilder.Append(": ");
+            builder.Append(": ");
             
             // Add message
             foreach (string m in message)
-                SBuilder.Append(m).Append("; ");
+                builder.Append(m).Append("; ");
 
             // Choose Log type
             if (Equals(tag1, CDebugTagType.ERROR)
                 || Equals(tag2, CDebugTagType.ERROR)
                 || Equals(tag3, CDebugTagType.ERROR)
                 || Equals(tag4, CDebugTagType.ERROR))
-                Debug.LogError(SBuilder.ToString());
+                Debug.LogError(builder.ToString());
             else if (Equals(tag1, CDebugTagType.WARNING)
                      || Equals(tag2, CDebugTagType.WARNING)
                      || Equals(tag3, CDebugTagType.WARNING)
                      || Equals(tag4, CDebugTagType.WARNING))
-                Debug.LogWarning(SBuilder.ToString());
+                Debug.LogWarning(builder.ToString());
             else
-                Debug.Log(SBuilder.ToString());
+                Debug.Log(builder.ToString());
 
             // Cleaning up String Builder for the following logs
-            SBuilder.Clear();
+            DisableSb(builder);
         }
 
-        
+
         /// <summary>
         /// Writing a tag to String Builder
         /// </summary>
         /// <param name="tag">Debug Tag</param>
+        /// <param name="builder">String Builder</param>
         /// <returns>Return false then Tag is disabled</returns>
-        private static bool WriteTag(Enum tag)
+        private static bool WriteTag(Enum tag, StringBuilder builder)
         {
             if (TagsMap.TryGetValue(tag, out CDebugTag dt))
             {
                 if (!dt.Enabled)
                 {
-                    SBuilder.Clear();
+                    DisableSb(builder);
                     return false;
                 }
 
                 if (!Equals(tag, CDebugTagType.NONE))
-                    SBuilder.Append(dt);
+                    builder.Append(dt);
             }
             else if (TagsMap.TryGetValue(CDebugTagType.UNKNOWN, out CDebugTag udt)) 
-                SBuilder.Append(udt);
+                builder.Append(udt);
 
             return true;
         }

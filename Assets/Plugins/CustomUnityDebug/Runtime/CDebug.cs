@@ -54,32 +54,25 @@ namespace Masev.CustomUnityDebug
 
         
         // String Builder Pool
-        private static readonly HashSet<StringBuilder> EnabledSb = new();
-        private static readonly HashSet<StringBuilder> DisabledSb = new();
-
-        private static StringBuilder GetSb()
+        private static readonly Queue<StringBuilder> DisabledStringBuildersQueue = new();
+        
+        private static StringBuilder GetStringBuilder()
         {
             StringBuilder builder;
-            if (DisabledSb.Count > 0)
+            if (DisabledStringBuildersQueue.Count > 0)
             {
-                builder = DisabledSb.First();
-                DisabledSb.Remove(builder);
-                EnabledSb.Add(builder);
+                builder = DisabledStringBuildersQueue.Dequeue();
                 return builder;
             }
 
             builder = new StringBuilder();
-            EnabledSb.Add(builder);
             return builder;
         }
-
-        private static void DisableSb(StringBuilder builder)
+        
+        private static void DisableStringBuilder(StringBuilder builder)
         {
-            if(!EnabledSb.Contains(builder)) 
-                throw new InvalidOperationException("The builder is not exist");
             builder.Clear();
-            EnabledSb.Remove(builder);
-            DisabledSb.Add(builder);
+            DisabledStringBuildersQueue.Enqueue(builder);
         }
         
         
@@ -136,7 +129,7 @@ namespace Masev.CustomUnityDebug
         public static void Log(Enum tag1, Enum tag2, Enum tag3, Enum tag4, params string[] message)
         {
             if (!DebugEnabled) return;
-            StringBuilder builder = GetSb();
+            StringBuilder builder = GetStringBuilder();
 
             // Add tags
             if (!WriteTag(tag1, builder)) return;
@@ -165,7 +158,7 @@ namespace Masev.CustomUnityDebug
                 Debug.Log(builder.ToString());
 
             // Cleaning up String Builder for the following logs
-            DisableSb(builder);
+            DisableStringBuilder(builder);
         }
 
 
@@ -181,7 +174,7 @@ namespace Masev.CustomUnityDebug
             {
                 if (!dt.Enabled)
                 {
-                    DisableSb(builder);
+                    DisableStringBuilder(builder);
                     return false;
                 }
 

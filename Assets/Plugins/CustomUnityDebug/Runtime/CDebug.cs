@@ -26,20 +26,25 @@ namespace Masev.CustomUnityDebug
         public static readonly Color32 WhiteGreen = new(124, 248, 124, 255);
         public static readonly Color32 Pink = new(255, 105, 180, 255);
         public static readonly Color32 WhiteGray = new(200, 200, 200, 255);
-        
-        
+
+
         /// <summary>
         /// Enable/Disable all CDebug messages
         /// </summary>
         public static bool DebugEnabled { get; set; } = true;
-        
+
+        /// <summary>
+        /// Enable/disable permanent display of the default tag
+        /// </summary>
+        public static bool AlwaysDefaultTag { get; set; } = true;
+
 
         /// <summary>
         /// Global Default Tag for CDebug
         /// </summary>
         public static Enum DefaultTag { get; set; } = CDebugTagType.DEBUG;
-        
-        
+
+
         // Dictionary with all Debug Tags
         private static readonly Dictionary<Enum, CDebugTag> TagsMap = new()
         {
@@ -52,10 +57,10 @@ namespace Masev.CustomUnityDebug
             { CDebugTagType.UNKNOWN, new CDebugTag("UNKNOWN", Color.yellow, true, true) },
         };
 
-        
+
         // String Builder Pool
         private static readonly Queue<StringBuilder> DisabledStringBuildersQueue = new();
-        
+
         private static StringBuilder GetStringBuilder()
         {
             StringBuilder builder;
@@ -68,14 +73,14 @@ namespace Masev.CustomUnityDebug
             builder = new StringBuilder();
             return builder;
         }
-        
+
         private static void DisableStringBuilder(StringBuilder builder)
         {
             builder.Clear();
             DisabledStringBuildersQueue.Enqueue(builder);
         }
-        
-        
+
+
         /// <summary>
         /// Add Own Tag to Custom Debug
         /// </summary>
@@ -83,14 +88,14 @@ namespace Masev.CustomUnityDebug
         /// <param name="cDebugTag">New Debug Tag</param>
         /// <returns>Return result of adding</returns>
         public static bool TryAddTag(Enum tag, CDebugTag cDebugTag) => TagsMap.TryAdd(tag, cDebugTag);
-        
+
 
         /// <summary>
         /// Log Message with Default Tag
         /// </summary>
         /// <param name="message">Message</param>
         public static void Log(params string[] message) => Log(DefaultTag, message);
-        
+
         /// <summary>
         /// Log Message with own Tag
         /// </summary>
@@ -132,13 +137,14 @@ namespace Masev.CustomUnityDebug
             StringBuilder builder = GetStringBuilder();
 
             // Add tags
+            if (AlwaysDefaultTag && !WriteTag(DefaultTag, builder)) return;
             if (!WriteTag(tag1, builder)) return;
             if (!WriteTag(tag2, builder)) return;
             if (!WriteTag(tag3, builder)) return;
             if (!WriteTag(tag4, builder)) return;
 
             builder.Append(": ");
-            
+
             // Add message
             foreach (string m in message)
                 builder.Append(m).Append("; ");
@@ -181,7 +187,7 @@ namespace Masev.CustomUnityDebug
                 if (!Equals(tag, CDebugTagType.NONE))
                     builder.Append(dt);
             }
-            else if (TagsMap.TryGetValue(CDebugTagType.UNKNOWN, out CDebugTag udt)) 
+            else if (TagsMap.TryGetValue(CDebugTagType.UNKNOWN, out CDebugTag udt))
                 builder.Append(udt);
 
             return true;

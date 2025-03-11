@@ -13,6 +13,7 @@ namespace DefaultNamespace
             CDebug.TryAddTag(CustomTag.TEST3, new CDebugTag("TEST3", CDebug.Orange, true, true));
             
             CDebug.DefaultTag = CustomTag.TEST;
+            CDebug.AlwaysDefaultTag = false;
             CDebug.SetTagEnabled(CustomTag.TEST, true);
             CDebug.DebugEnabled = true;
         }

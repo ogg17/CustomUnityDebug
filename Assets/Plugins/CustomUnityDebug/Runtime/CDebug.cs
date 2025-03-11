@@ -94,7 +94,7 @@ namespace Masev.CustomUnityDebug
         /// Log Message with Default Tag
         /// </summary>
         /// <param name="message">Message</param>
-        public static void Log(params string[] message) => Log(DefaultTag, message);
+        public static void Log(params string[] message) => Log(AlwaysDefaultTag ? CDebugTagType.NONE : DefaultTag, message);
 
         /// <summary>
         /// Log Message with own Tag

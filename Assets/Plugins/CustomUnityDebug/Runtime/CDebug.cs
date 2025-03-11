@@ -38,6 +38,11 @@ namespace Masev.CustomUnityDebug
         /// </summary>
         public static bool AlwaysDefaultTag { get; set; } = true;
 
+        /// <summary>
+        /// Enable/disable bold text in message
+        /// </summary>
+        public static bool BoldMessageText { get; set; } = false;
+
 
         /// <summary>
         /// Global Default Tag for CDebug
@@ -147,7 +152,12 @@ namespace Masev.CustomUnityDebug
 
             // Add message
             foreach (string m in message)
-                builder.Append(m).Append("; ");
+            {
+                if (BoldMessageText) builder.Append("<b>");
+                builder.Append(m);
+                if (BoldMessageText) builder.Append("</b>");
+                builder.Append("; ");
+            }
 
             // Choose Log type
             if (Equals(tag1, CDebugTagType.ERROR)

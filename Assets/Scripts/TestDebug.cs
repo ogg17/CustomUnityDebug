@@ -7,13 +7,14 @@ namespace DefaultNamespace
     {
         private void Awake()
         {
-            CDebug.TryAddTag(CustomTag.TEST, new CDebugTag("TEST", Color.blue, false, false));
-            CDebug.TryAddTag(CustomTag.TEST1, new CDebugTag("TEST1", CDebug.Pink, false, true));
+            CDebug.TryAddTag(CustomTag.TEST, new CDebugTag("TEST", Color.blue, true, false));
+            CDebug.TryAddTag(CustomTag.TEST1, new CDebugTag("TEST1", CDebug.Pink, true, true));
             CDebug.TryAddTag(CustomTag.TEST2, new CDebugTag("TEST2", CDebug.WhiteGray, true, false));
             CDebug.TryAddTag(CustomTag.TEST3, new CDebugTag("TEST3", CDebug.Orange, true, true));
             
             CDebug.DefaultTag = CustomTag.TEST;
-            CDebug.AlwaysDefaultTag = false;
+            //CDebug.AlwaysDefaultTag = false;
+            CDebug.BoldMessageText = true;
             CDebug.SetTagEnabled(CustomTag.TEST, true);
             CDebug.DebugEnabled = true;
         }

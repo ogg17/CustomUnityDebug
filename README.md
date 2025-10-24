@@ -1,7 +1,8 @@
 # Custom Unity Debug
 > Extend Unity's console with composable tags, reusable formatting, and runtime switches instead of hand-crafted `Debug.Log` strings.
 
-![image](https://github.com/user-attachments/assets/6575f530-011e-4e31-9bdc-e6e12e468336)
+<img width="780" height="400" alt="CDebugPreview" src="https://github.com/user-attachments/assets/8be67953-bd0c-4a0b-a8b5-2fa47d6c71b6" />
+
 
 ## Install
 Install via Git URL. Unity must support the `path` query parameter (Unity >= 2019.3.4f1, Unity >= 2020.1a21).

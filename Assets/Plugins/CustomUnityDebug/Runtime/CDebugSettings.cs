@@ -1,5 +1,4 @@
 ﻿using Masev.CustomUnityDebug.TextFormatting;
-using UnityEngine;
 
 namespace Masev.CustomUnityDebug
 {
@@ -23,14 +22,14 @@ namespace Masev.CustomUnityDebug
         /// Global Default Tag for CDebug
         /// </summary>
         public static BaseCTag DefaultTag { get; set; } = CTag.New()
-            .Str("CDEBUG").Color(Color.lightGray).Spacer(Spacers.None)
+            .Str("CDEBUG").Color(CDebug.LightGray).Spacer(Spacers.None)
             .TextType(TextTypes.Regular).Brackets(Brackets.Square);
 
         public static BaseCTag DefaultText { get; set; } = CTag.New()
-            .Str("CDEBUG").Color(Color.lightGray).Spacer(Spacers.None)
+            .Str("CDebug").Color(CDebug.LightGray).Spacer(Spacers.None)
             .TextType(TextTypes.Regular).Brackets(Brackets.None);
 
         public static BaseCTag DefaultSpace { get; set; } = CTag.New()
-            .Color(Color.lightGray).Spacer(Spacers.Colon);
+            .Color(CDebug.LightGray).Spacer(Spacers.Colon);
     }
 }

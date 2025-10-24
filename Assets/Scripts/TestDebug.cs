@@ -9,7 +9,7 @@ namespace DefaultNamespace
     {
         public static CTag TEST = CTag.Tag("TEST").Color(Color.cyan);
         public static CTag TEST1 = CTag.Tag("TEST1").Color(CDebug.Pink);
-        public static CTag TEST2 = CTag.Tag("TEST2").Color(CDebug.WhiteGray);
+        public static CTag TEST2 = CTag.Tag("TEST2").Color(CDebug.LightGray);
         public static CTag TEST3 = CTag.Tag("TEST3").Color(CDebug.Orange);
         public static CTag DEBUG = CTag.Clone(CDebugSettings.DefaultTag).Str(nameof(TestDebug).ToUpper());
 

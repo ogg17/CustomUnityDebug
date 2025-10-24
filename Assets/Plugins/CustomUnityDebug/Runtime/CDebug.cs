@@ -11,28 +11,25 @@ namespace Masev.CustomUnityDebug
     /// </summary>
     public static class CDebug
     {
+        // Color Presets
+        public static readonly Color32 Orange = new(255, 128, 0, 255);
+        public static readonly Color32 LightGreen = new(124, 248, 124, 255);
+        public static readonly Color32 DarkGreen = new(0, 90, 0, 255);
+        public static readonly Color32 Pink = new(255, 105, 180, 255);
+        public static readonly Color32 LightGray = new(200, 200, 200, 255);
+        
         // Short-cuts for CDebugElements
         public static readonly BaseCTag Debug = CDebugSettings.DefaultTag;
-        public static readonly BaseCTag Ok = CTag.Tag("OK").Color(Color.darkGreen);
-
-        public static readonly BaseCTag Warning =
-            CTag.Tag("WARNING").Color(Color.yellow).TextType(TextTypes.Bold).LogType(LogType.Warning);
-
-        public static readonly BaseCTag Error = CTag.Tag("ERROR").Color(Color.red).TextType(TextTypes.Bold)
-            .LogType(LogType.Error);
-
+        public static readonly BaseCTag Ok = CTag.Tag("OK").Color(DarkGreen);
+        public static readonly BaseCTag Warning = CTag.Tag("WARNING").Color(Color.yellow)
+            .TextType(TextTypes.Bold).LogType(LogType.Warning);
+        public static readonly BaseCTag Error = CTag.Tag("ERROR").Color(Color.red)
+            .TextType(TextTypes.Bold).LogType(LogType.Error);
         public static readonly BaseCTag Space = CTag.PlainText(string.Empty).Spacer(Spacers.Colon);
-
         public static readonly BaseCTag Text = CDebugSettings.DefaultText;
 
         // Empty Tag
         public static readonly CTag None = CTag.New();
-
-        // Color Presets
-        public static readonly Color32 Orange = new(255, 128, 0, 255);
-        public static readonly Color32 WhiteGreen = new(124, 248, 124, 255);
-        public static readonly Color32 Pink = new(255, 105, 180, 255);
-        public static readonly Color32 WhiteGray = new(200, 200, 200, 255);
 
 
         /// <summary>

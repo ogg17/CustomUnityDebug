@@ -1,37 +1,56 @@
-﻿using Masev.CustomUnityDebug;
+﻿using System.Collections;
+using Masev.CustomUnityDebug;
+using Masev.CustomUnityDebug.TextFormatting;
 using UnityEngine;
 
 namespace DefaultNamespace
 {
     public class TestDebug : MonoBehaviour
     {
+        public static CTag TEST = CTag.Tag("TEST").Color(Color.cyan);
+        public static CTag TEST1 = CTag.Tag("TEST1").Color(CDebug.Pink);
+        public static CTag TEST2 = CTag.Tag("TEST2").Color(CDebug.WhiteGray);
+        public static CTag TEST3 = CTag.Tag("TEST3").Color(CDebug.Orange);
+        public static CTag DEBUG = CTag.Clone(CDebugSettings.DefaultTag).Str(nameof(TestDebug).ToUpper());
+
+
         private void Awake()
         {
-            CDebug.TryAddTag(CustomTag.TEST, new CDebugTag("TEST", Color.blue, false, false));
-            CDebug.TryAddTag(CustomTag.TEST1, new CDebugTag("TEST1", CDebug.Pink, false, true));
-            CDebug.TryAddTag(CustomTag.TEST2, new CDebugTag("TEST2", CDebug.WhiteGray, true, false));
-            CDebug.TryAddTag(CustomTag.TEST3, new CDebugTag("TEST3", CDebug.Orange, true, true));
+#if UNITY_EDITOR
+            CDebugSettings.DebugFirstTagAlwaysDefault = true;
+            CDebugSettings.DisableAllMessageWithTag = false;
+            TEST.SetEnabled(true);
+            CDebugSettings.DebugEnabled = true;
+            CDebugSettings.DefaultTag = DEBUG;
+#else
+            CDebugSettings.DebugEnabled = false;
+#endif
+        }
+
+        private IEnumerator Test()
+        {
+            CDebug.Log();
+            CDebug.Log(TEST, "Test Async!");
+            yield return null;
+            CDebug.Log(TEST1, "Test Async!");
+            CDebug.Log("KEK".AsTag());
             
-            CDebug.DefaultTag = CustomTag.TEST;
-            CDebug.SetTagEnabled(CustomTag.TEST, true);
-            CDebug.DebugEnabled = true;
+            Debug.LogAssertion("KEK");
         }
 
         private void Start()
         {
-            CDebug.Log("Test!");
-            CDebug.Log(CDebug.DEBUG, CustomTag.TEST1, "Test1!");
-            CDebug.Log(CDebug.WARNING, CustomTag.TEST2,"Test2");
-            CDebug.Log(CDebug.ERROR, CustomTag.TEST3,"Test3");
-        }
-    }
+            CDebug.Log("CORE".AsTag(), CDebug.Space, "One", "Two", "Sree");
+            CDebug.Log("Test!", "LOL".AsTag(), CDebug.Warning);
+            CDebug.Log(TEST1.AsNew().Spacer(Spacers.Colon), "Test1!");
+            CDebug.Log(TEST, TEST1, "Test1!".AsTag());
+            CDebug.Log(CDebug.Warning, TEST2, "Test2".AsTag());
+            CDebug.Log(CDebug.Error, TEST3, "Test3".AsTag());
+            CDebug.Log(this.AsNameTag(), "KEK2".AsTag());
+            CDebug.Log("POST".AsTag(), CDebug.None, "Test different variants");
 
-    public enum CustomTag
-    {
-        TEST,
-        TEST1,
-        TEST2,
-        TEST3,
-        TEST4,
+            StartCoroutine(Test());
+            StartCoroutine(Test());
+        }
     }
 }

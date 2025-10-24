@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using Masev.CustomUnityDebug.TextFormatting;
 using UnityEngine;
 using LogType = Masev.CustomUnityDebug.TextFormatting.LogType;
@@ -7,35 +6,57 @@ using LogType = Masev.CustomUnityDebug.TextFormatting.LogType;
 namespace Masev.CustomUnityDebug
 {
     /// <summary>
-    /// Main Custom Debug Class
+    /// Entry point for composing Unity console messages that reuse the tagging helpers from this package.
     /// </summary>
     public static class CDebug
     {
-        // Color Presets
         public static readonly Color32 Orange = new(255, 128, 0, 255);
         public static readonly Color32 LightGreen = new(124, 248, 124, 255);
         public static readonly Color32 DarkGreen = new(0, 90, 0, 255);
         public static readonly Color32 Pink = new(255, 105, 180, 255);
         public static readonly Color32 LightGray = new(200, 200, 200, 255);
-        
-        // Short-cuts for CDebugElements
-        public static readonly BaseCTag Debug = CDebugSettings.DefaultTag;
-        public static readonly BaseCTag Ok = CTag.Tag("OK").Color(DarkGreen);
-        public static readonly BaseCTag Warning = CTag.Tag("WARNING").Color(Color.yellow)
-            .TextType(TextTypes.Bold).LogType(LogType.Warning);
-        public static readonly BaseCTag Error = CTag.Tag("ERROR").Color(Color.red)
-            .TextType(TextTypes.Bold).LogType(LogType.Error);
-        public static readonly BaseCTag Space = CTag.PlainText(string.Empty).Spacer(Spacers.Colon);
-        public static readonly BaseCTag Text = CDebugSettings.DefaultText;
-
-        // Empty Tag
-        public static readonly CTag None = CTag.New();
-
 
         /// <summary>
-        /// Log Message with own Tags
+        /// Default tag.
         /// </summary>
-        /// <param name="elements">CDebug text elements</param>
+        public static readonly BaseCTag Debug = CDebugSettings.DefaultTag;
+
+        /// <summary>
+        /// Convenience tag that marks a message as successful.
+        /// </summary>
+        public static readonly BaseCTag Ok = CTag.Tag("OK").Color(DarkGreen);
+
+        /// <summary>
+        /// Convenience tag that flags a message as a warning.
+        /// </summary>
+        public static readonly BaseCTag Warning = CTag.Tag("WARNING").Color(Color.yellow)
+            .TextType(TextType.Bold).LogType(LogType.Warning);
+
+        /// <summary>
+        /// Convenience tag that flags a message as an error.
+        /// </summary>
+        public static readonly BaseCTag Error = CTag.Tag("ERROR").Color(Color.red)
+            .TextType(TextType.Bold).LogType(LogType.Error);
+
+        /// <summary>
+        /// Default spacer.
+        /// </summary>
+        public static readonly BaseCTag Space = CDebugSettings.DefaultSpace;
+
+        /// <summary>
+        /// Default text.
+        /// </summary>
+        public static readonly BaseCTag Text = CDebugSettings.DefaultText;
+
+        /// <summary>
+        /// Blank tag instance that can be configured fluently without affecting shared defaults.
+        /// </summary>
+        public static readonly CTag None = CTag.New();
+
+        /// <summary>
+        /// Logs a message built from the supplied <see cref="BaseCTag"/> elements, honoring <see cref="CDebugSettings"/> options and taking the most severe <see cref="LogType"/>.
+        /// </summary>
+        /// <param name="elements">Sequence of text fragments and formatting tags to compose the message.</param>
         public static void Log(params BaseCTag[] elements)
         {
             if (!CDebugSettings.DebugEnabled) return;

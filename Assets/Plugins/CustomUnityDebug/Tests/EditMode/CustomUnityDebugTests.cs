@@ -59,7 +59,7 @@ namespace Masev.CustomUnityDebug.Tests
             var tag = CTag.New()
                 .Str("DATA")
                 .Color(new Color32(10, 20, 30, 255))
-                .TextType(TextTypes.BoldItalic)
+                .TextType(TextType.BoldItalic)
                 .Brackets(Brackets.Round)
                 .Spacer(Spacers.Colon);
 

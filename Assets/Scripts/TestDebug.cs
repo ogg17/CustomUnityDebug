@@ -24,14 +24,14 @@ namespace DefaultNamespace
 
         private static readonly CTag DemoDefaultTag = CTag.Tag("CDEBUG")
             .Color(CDebug.LightGray)
-            .TextType(TextTypes.Bold)
+            .TextType(TextType.Bold)
             .Brackets(Brackets.Square);
 
         private static readonly CTag GameplayTag = CTag.Tag("GAMEPLAY").Color(CDebug.Orange);
         private static readonly CTag UiTag = CTag.Tag("UI").Color(CDebug.LightGreen);
         private static readonly CTag NetworkWarningTag = CTag.Tag("NETWORK").Color(CDebug.Pink).LogType(LogType.Warning);
         private static readonly CTag CriticalErrorTag = CTag.Tag("CRITICAL").Color(Color.red)
-            .TextType(TextTypes.Bold)
+            .TextType(TextType.Bold)
             .LogType(LogType.Error);
 
         private static readonly CTag ContextLabel = CTag.Label("Context").Color(CDebug.LightGray);
@@ -54,7 +54,7 @@ namespace DefaultNamespace
             CDebugSettings.DefaultTag = DemoDefaultTag.AsNew();
             CDebugSettings.DefaultText = CTag.New()
                 .Color(CDebug.LightGray)
-                .TextType(TextTypes.Regular)
+                .TextType(TextType.Regular)
                 .Spacer(Spacers.Space)
                 .Brackets(Brackets.None);
             CDebugSettings.DefaultSpace = CTag.New().Spacer(Spacers.Space);
@@ -84,10 +84,10 @@ namespace DefaultNamespace
             CDebug.Log(CDebug.Error, "Errors call Debug.LogError under the hood.");
 
             LogSection("Tags and formatting");
-            CDebug.Log(GameplayTag, "Player spawned".AsText());
+            CDebug.Log(GameplayTag, ColonSpacer, "Player spawned".AsText());
             CDebug.Log(UiTag, ColonSpacer, "Button pressed".AsBoldText());
-            CDebug.Log(NetworkWarningTag, "Packet dropped".AsItalicText());
-            CDebug.Log(CriticalErrorTag, "Unhandled exception".AsBoldItalicText());
+            CDebug.Log(NetworkWarningTag, ColonSpacer, "Packet dropped".AsItalicText());
+            CDebug.Log(CriticalErrorTag, ColonSpacer, "Unhandled exception".AsBoldItalicText());
 
             LogSection("Combining tags");
             CDebug.Log("SYSTEM".AsTag(), ColonSpacer, "Boot sequence started");

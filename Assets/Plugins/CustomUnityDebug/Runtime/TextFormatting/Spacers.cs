@@ -2,6 +2,9 @@
 
 namespace Masev.CustomUnityDebug.TextFormatting
 {
+    /// <summary>
+    /// Spacer presets that can be appended after a tag.
+    /// </summary>
     public enum Spacers
     {
         Space,
@@ -13,8 +16,16 @@ namespace Masev.CustomUnityDebug.TextFormatting
         None,
     }
 
+    /// <summary>
+    /// Helpers that convert spacer presets into their string representation.
+    /// </summary>
     public static class SpacerStyleExtensions
     {
+        /// <summary>
+        /// Returns the spacer string associated with the supplied preset.
+        /// </summary>
+        /// <param name="style">Spacer preset.</param>
+        /// <returns>String appended after the tag.</returns>
         public static string RichText(this Spacers style) => style switch
         {
             Spacers.Space => " ",

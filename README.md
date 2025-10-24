@@ -1,138 +1,93 @@
 # Custom Unity Debug
-> Custom Unity Debug is an open-source extension for Unity's Debug.Log, offering enhanced logging with customizable tags, colors, and formatting. It allows developers to define, categorize, and filter log messages efficiently. Features include multi-tag logging, global and per-tag enable/disable controls, and seamless integration with Unity's console.
+> Extend Unity's console with composable tags, reusable formatting, and runtime switches instead of hand-crafted `Debug.Log` strings.
 
 ![image](https://github.com/user-attachments/assets/6575f530-011e-4e31-9bdc-e6e12e468336)
 
 ## Install
-Install via git URL
+Install via Git URL. Unity must support the `path` query parameter (Unity >= 2019.3.4f1, Unity >= 2020.1a21).
 
-Requires a version of unity that supports path query parameter for git packages (Unity >= 2019.3.4f1, Unity >= 2020.1a21). 
-You can add https://github.com/ogg17/CustomUnityDebug.git?path=Assets/Plugins/CustomUnityDebug to Package Manager
-
-or add "com.masev.customdebug": "https://github.com/ogg17/CustomUnityDebug.git?path=Assets/Plugins/CustomUnityDebug" to Packages/manifest.json.
-
-If you want to set a target version, UniTask uses the *.*.* release tag so you can specify a version like #0.1.0. 
-For example https://github.com/ogg17/CustomUnityDebug.git?path=Assets/Plugins/CustomUnityDebug#0.1.0.
-
-## Usage
-
-### Basic
-To perform basic logging with the default tag, use the following syntax:
-
-```csharp
-    CDebug.Log("Test!");
+Add the package through Package Manager:
 ```
-This will log the message "Test!" with the default settings.
-
-For logging warnings, you can specify the `CDebug.WARNING` tag:
-
-```csharp
-    CDebug.Log(CDebug.WARNING, "Test!");
+https://github.com/ogg17/CustomUnityDebug.git?path=Assets/Plugins/CustomUnityDebug
 ```
 
-Similarly, to log errors, use the `CDebug.ERROR` tag:
-
-```csharp
-    CDebug.Log(CDebug.ERROR, "Test!");
-```
-These predefined tags help in distinguishing between regular logs, warnings, and errors. The `WARNING` tag internally calls `Debug.LogWarning`, while the `ERROR` tag calls Debug.LogError for proper logging in Unity.
-#### Setting the Default Tag
-
-You can set the default logging tag using the `CDebug.DefaultTag` property. This is useful if you want to globally define a default tag for all logs:
-
-```csharp
-CDebug.DefaultTag = CustomTag.TEST;
+Or add it to `Packages/manifest.json`:
+```json
+"com.masev.customdebug": "https://github.com/ogg17/CustomUnityDebug.git?path=Assets/Plugins/CustomUnityDebug"
 ```
 
-Once set, any log call without a specified tag will default to `CustomTag.TEST`, unless otherwise overridden.
+If you need a specific release, append `#<tag>` (for example `#0.1.0`).
 
-### Custom Tags
-
-Begin by defining an enumeration that represents your custom tags:
-
-#### Defining Custom Tags
-
+## Quick Start
 ```csharp
-    public enum CustomTag
+using Masev.CustomUnityDebug;
+using Masev.CustomUnityDebug.TextFormatting;
+using UnityEngine;
+
+public sealed class Sample : MonoBehaviour
+{
+    private static readonly CTag Gameplay = CTag.Tag("GAMEPLAY").Color(CDebug.Orange);
+
+    private void Start()
     {
-        TEST,
-        FEATURE_X,
-        DATABASE,
-        UI,
-        NETWORK,
+        CDebug.Log("Hello world");                        // Default formatting
+        CDebug.Log(CDebug.Warning, "Heads up!");           // Logs as a Unity warning
+        CDebug.Log(Gameplay, "Player spawned".AsText());   // Custom tag + text helper
     }
-```
-This enumeration serves as a list of identifiers for your custom tags.
-
-#### Adding Custom Tags to CDebug
-
-Once you've defined your enumeration, add these custom tags to `CDebug` using the `TryAddTag` method. This method associates each enum value with a `CDebugTag` object, which defines the tag's appearance and formatting.
-
-The `TryAddTag` method has the following signature:
-```
-    bool CDebug.TryAddTag(Enum tag, CDebugTag debugTag)
+}
 ```
 
-The `CDebugTag` constructor is defined as:
-```
-    CDebugTag(string tag, Color32 color, bool bold, bool italic)
-```
-* `tag`: The display name of the tag.
-* `color`: The color to be used for the tag.
-* `bold`: A boolean indicating whether the tag text should be bold.
-* `italic`: A boolean indicating whether the tag text should be italicized.
+- `CDebug.Log` takes any number of `BaseCTag` instances. Strings automatically become text tags, so you can mix plain strings with rich tags.
+- The highest `LogType` among the supplied tags decides whether the entry is a log, warning, or error.
+- Built-in helpers: `CDebug.Debug` (default tag), `CDebug.Ok`, `CDebug.Warning`, `CDebug.Error`, `CDebug.Space` (colon spacer), `CDebug.Text`, and `CDebug.None` (empty tag).
 
-Example:
-```csharp
-    CDebug.TryAddTag(CustomTag.TEST, new CDebugTag("TEST", Color.blue, false, false));
-    CDebug.TryAddTag(CustomTag.FEATURE_X, new CDebugTag("FEATURE_X", CDebug.Pink, false, true));
-    CDebug.TryAddTag(CustomTag.DATABASE, new CDebugTag("DATABASE", CDebug.WhiteGray, true, false));
-    CDebug.TryAddTag(CustomTag.UI, new CDebugTag("UI", CDebug.Orange, true, true));
-    CDebug.TryAddTag(CustomTag.NETWORK, new CDebugTag("NETWORK", Color.green, false, false));
-```
-In this example, each custom tag is assigned a unique name and formatting style.
-
-#### Using Custom Tags in Logging
-
-After setting up your custom tags, you can use them in your logging statements as follows:
-```csharp
-    CDebug.Log(CustomTag.TEST, "This is a test message.");
-    CDebug.Log(CustomTag.FEATURE_X, "Feature X has been initialized.");
-    CDebug.Log(CustomTag.DATABASE, "Database connection established.");
-    CDebug.Log(CustomTag.UI, "User interface loaded successfully.");
-    CDebug.Log(CustomTag.NETWORK, "Network request completed.");
-```
-
-### Logging with Multiple Tags
-
-`CDebug` also allows logging with multiple tags in a single log entry. You can pass up to four tags as parameters to the `Log` method:
-```csharp
-CDebug.Log(CustomTag.UI, CustomTag.NETWORK, "UI received a network response.");
-CDebug.Log(CustomTag.DATABASE, CustomTag.FEATURE_X, CustomTag.TEST, "Feature X is processing database test data.");
-```
-
-### Enabling and Disabling Logging
-
-You can control the overall logging behavior in your application as well as enable or disable specific tags for finer control.
-
-#### Enabling and Disabling Global Logging
-
-To enable or disable all logging globally, you can use the `CDebug.DebugEnabled` property:
+## Tags, Text, and Formatting
+`CTag` is the workhorse for defining rich snippets. Create them fluently or clone existing ones at runtime.
 
 ```csharp
-CDebug.DebugEnabled = true;  // Enables all debugging logs
-CDebug.DebugEnabled = false; // Disables all debugging logs
+var system = CTag.Tag("SYSTEM")
+    .Color(CDebug.LightGray)
+    .Brackets(Brackets.Square);
+
+var label = CTag.Label("Version");     // Adds the default spacer automatically
+var value = CTag.Text("1.2.0")
+    .Color(CDebug.LightGreen)
+    .TextType(TextTypes.Bold);
+
+CDebug.Log(system, label, value);
 ```
 
-When set to `false`, all logs across the application will be suppressed.
+Useful factory methods and extensions:
+- `CTag.Tag`, `CTag.Text`, `CTag.Label`, `CTag.Timestamp`, and `CTag.PlainText`
+- `AsTag`, `AsEndTag`, `AsText`, `AsBoldText`, `AsLabel`, and `AsTimestamp` extension helpers for strings, enums, Unity objects, and `DateTime`
+- `AsNew()` clones a tag so you can tweak color, text, spacer, or brackets without mutating the original
 
-#### Enabling and Disabling Specific Tags
+Spacing and bracket presets are handled through the `Spacers` and `Brackets` enums. Combine them to produce anything from `[TAG]` to `Tag: value` or `Loading...` out of the box.
 
-If you only want to disable certain tags, you can control individual tag logging using `CDebug.SetTagEnabled`:
+## Runtime Controls
+`CDebugSettings` exposes the global switches you typically need in production builds:
 
-```csharp
-CDebug.SetTagEnabled(CustomTag.TEST, true);   // Enables logs for the TEST tag
-CDebug.SetTagEnabled(CustomTag.TEST, false);  // Disables logs for the TEST tag
-```
+- `DebugEnabled` — master toggle for every `CDebug.Log` call.
+- `DebugFirstTagAlwaysDefault` — automatically add `DefaultTag` as the first tag
+- `DefaultTag`, `DefaultText`, and `DefaultSpace` — customize the look & feel of headers, text, and separators globally.
+- `DisableAllMessageWithTag` — when `true`, a disabled tag aborts the entire log call instead of just skipping that tag.
 
-This allows you to selectively turn off logging for specific tags while keeping others enabled.
+You can also enable/disable individual tags on the fly with `CTag.SetEnabled(false)`. When the tag is disabled and `DisableAllMessageWithTag` is `false`, the tag is skipped but the rest of the message still emits.
+
+## Demo Component
+`Assets/Scripts/TestDebug.cs` is a MonoBehaviour that doubles as living documentation:
+
+- Shows basic logging, tag composition, cloning, and formatting helpers
+- Demonstrates how runtime switches affect output
+- Highlights timestamps, coroutine logging, and spacer/bracket presets
+- Provides a context menu item (`Run Demo`) so you can re-run the showcase without restarting Play mode
+
+Drop the component into any scene, press Play, and read through the console output as a guided tour of the API.
+
+## Tips
+- Group reusable tags in static fields and clone them with `AsNew()` when you need a temporary variation.
+- Use `CTag.Timestamp()` or the `DateTime.AsTimestamp()` extension to add consistent time markers.
+- Combine `CDebug.Space` with section headers to visually group related logs in the console.
+
+## Old
+> Documentation for old version (0.1.0) you can find in **0.1.0_README.md**

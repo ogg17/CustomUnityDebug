@@ -41,61 +41,55 @@ namespace Masev.CustomUnityDebug
             if (!CDebugSettings.DebugEnabled) return;
 
             using var builder = StringBuilderPool.Rent();
-
-            var length = elements?.Length ?? 0;
+            var disableOnInvalidTag = CDebugSettings.DisableAllMessageWithTag;
 
             if (CDebugSettings.DebugFirstTagAlwaysDefault)
             {
-                if (!TryWriteTag(CDebugSettings.DefaultTag, builder.Builder)
-                    && CDebugSettings.DisableAllMessageWithTag) return;
+                if (CDebugSettings.DefaultTag == null || !CDebugSettings.DefaultTag.Enabled)
+                {
+                    if (disableOnInvalidTag) return;
+                }
+                else
+                {
+                    builder.Builder.Append(CDebugSettings.DefaultTag.FormattedStr);
+                }
             }
 
-            if (length >= 1)
-            {
-                foreach (var element in elements)
-                    if (!TryWriteTag(element, builder.Builder)
-                        && CDebugSettings.DisableAllMessageWithTag) return;
-            }
-
-            // Choose a Log type
             var logType = LogType.Log;
-            if (length >= 1)
+
+            if (elements != null)
             {
                 foreach (var element in elements)
                 {
+                    if (element == null || !element.Enabled)
+                    {
+                        if (disableOnInvalidTag) return;
+                        continue;
+                    }
+
+                    builder.Builder.Append(element.FormattedStr);
+
                     if (logType >= element.RawLogType) continue;
                     logType = element.RawLogType;
-                    if (logType == LogType.Error) break;
                 }
             }
+
+            var message = builder.Builder.ToString();
 
             switch (logType)
             {
                 case LogType.Log:
-                    UnityEngine.Debug.Log(builder.Builder.ToString());
+                    UnityEngine.Debug.Log(message);
                     break;
                 case LogType.Warning:
-                    UnityEngine.Debug.LogWarning(builder.Builder.ToString());
+                    UnityEngine.Debug.LogWarning(message);
                     break;
                 case LogType.Error:
-                    UnityEngine.Debug.LogError(builder.Builder.ToString());
+                    UnityEngine.Debug.LogError(message);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        private static bool TryWriteTag(BaseCTag element, StringBuilder builder)
-        {
-            if (element == null || !element.Enabled)
-                return false;
-
-            if (!element.Equals(None))
-            {
-                builder.Append(element.FormattedStr);
-            }
-
-            return true;
         }
     }
 }

@@ -17,8 +17,11 @@ namespace Masev.CustomUnityDebug
             if (Pool.TryPop(out var builder))
             {
                 if (builder.Capacity > MaxRetainedCapacity)
-                    builder = new StringBuilder(capacity);
-                
+                    return new StringBuilder(capacity);
+
+                if (builder.Capacity < capacity)
+                    builder.EnsureCapacity(capacity);
+
                 return builder;
             }
             return new StringBuilder(capacity);

@@ -91,13 +91,13 @@ namespace Masev.CustomUnityDebug.TextFormatting
 
         public static CTag New() => new();
         
-        public static CTag Text(string str) => CDebugSettings.DefaultText.AsNew().Str(str);
+        public static CTag Text(string str) => CDebugSettings.DefaultText.AsNew().Str(str ?? "NULL");
         public static CTag PlainText(string str) => Text(str).TextType(TextTypes.Regular);
         public static CTag BoldText(string str) => Text(str).TextType(TextTypes.Bold);
         public static CTag ItalicText(string str) => Text(str).TextType(TextTypes.Italic);
         public static CTag BoldItalicText(string str) => Text(str).TextType(TextTypes.BoldItalic);
 
-        public static CTag Tag(string str) => CDebugSettings.DefaultTag.AsNew().Str(str);
+        public static CTag Tag(string str) => CDebugSettings.DefaultTag.AsNew().Str(str ?? "NULL");
         public static CTag SquareTag(string str) => Tag(str).Brackets(TextFormatting.Brackets.Square);
         public static CTag CurlTag(string str) => Tag(str).Brackets(TextFormatting.Brackets.Curly);
         public static CTag RoundTag(string str) => Tag(str).Brackets(TextFormatting.Brackets.Round);
@@ -122,6 +122,7 @@ namespace Masev.CustomUnityDebug.TextFormatting
             RawTextType = tag.RawTextType,
             RawBrackets = tag.RawBrackets,
             RawSpacer = tag.RawSpacer,
+            RawLogType = tag.RawLogType,
             Enabled = tag.Enabled,
         };
     }

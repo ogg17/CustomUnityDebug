@@ -24,17 +24,22 @@ namespace Masev.CustomUnityDebug.TextFormatting
         public static implicit operator BaseCTag(Object obj) =>
             CDebugSettings.DefaultTag.AsNew().Str(obj == null ? "NULL" : obj.GetType().Name);
 
-        public bool Equals(BaseCTag other) =>
-            RawStr == other.RawStr
-            && RawColor.Equals(other.RawColor)
-            && RawTextType == other.RawTextType
-            && RawBrackets == other.RawBrackets
-            && RawSpacer == other.RawSpacer;
+        public bool Equals(BaseCTag other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+
+            return RawStr == other.RawStr
+                   && RawColor.Equals(other.RawColor)
+                   && RawTextType == other.RawTextType
+                   && RawBrackets == other.RawBrackets
+                   && RawSpacer == other.RawSpacer
+                   && RawLogType == other.RawLogType;
+        }
 
         public override bool Equals(object obj) =>
-            obj is BaseCTag tag && Equals(tag);
+            ReferenceEquals(this, obj) || obj is BaseCTag tag && Equals(tag);
 
         public override int GetHashCode() => 
-            HashCode.Combine(RawStr, RawColor, (int)RawTextType, (int)RawBrackets, (int)RawSpacer);
+            HashCode.Combine(RawStr, RawColor, (int)RawTextType, (int)RawBrackets, (int)RawSpacer, (int)RawLogType);
     }
 }
